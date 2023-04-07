@@ -1,0 +1,84 @@
+@model TodoItemCreationViewModel
+@{
+    ViewData["Title"] = "Todo Items";
+}
+
+<h2 class="mb-3">Create new task</h2>
+<form method="post" class="mb-5" asp-controller="TodoItems" asp-action="CreateTodoItem">
+    <div class="mb-3 row">
+        <div class="col-12">
+            <input type="text" asp-for="NewTodoItem.Name" placeholder="Task..." class="form-control">
+            <span asp-validation-for="NewTodoItem.Name"></span>
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <div class="col-4">
+            <select class="form-select" asp-for="NewTodoItem.CategoryId" asp-items="@Model.Categories">
+                <option value="" disabled selected>Select category</option>
+            </select>
+            <span asp-validation-for="NewTodoItem.CategoryId"></span>
+        </div>
+        <div class="col-4">
+            <input type="datetime-local" asp-for="NewTodoItem.DueDate" class="form-control">
+            <span asp-validation-for="NewTodoItem.DueDate"></span>
+        </div>
+        <div class="col-4 form-check my-auto">
+            <input class="form-check-input" asp-for="NewTodoItem.Completed" type="checkbox" value="true">
+            <label class="form-check-label" asp-for="NewTodoItem.Completed">
+                Completed
+            </label>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Create new task</button>
+</form>
+
+<style>
+    .completed {
+        background-color: rgb(175, 174, 174);
+    }
+    .completed-task-name {
+        text-decoration: line-through;
+    }
+    .expired-task-date {
+        color: red;
+    }
+</style>
+
+@foreach (var todoItem in Model.TodoItems)
+{
+    
+    var todoItemStyle = "border p-3 mb-3 rounded";
+    var todoItemCompletedNameStyle = "";
+    var todoItemExpiredDate = "";
+    if (todoItem.Completed) {
+        todoItemStyle += " completed";
+        todoItemCompletedNameStyle += " completed-task-name";
+    } else if (todoItem.DueDate <= DateTime.Now) {
+        todoItemStyle += " border-danger";
+        todoItemExpiredDate = " expired-task-date";
+    }
+    <div class="@todoItemStyle">
+        <div class="row">
+            <div class="col-9 text-truncate">
+                <h3 class="@todoItemCompletedNameStyle">@todoItem.Name</h3>
+            </div>
+            <div class="col-3 my-auto">
+                <a class="align-middle btn btn-secondary btn-sm" asp-controller="TodoItems" asp-action="UpdateTodoItem" asp-route-id=@todoItem.Id>Update</a>
+                <a class="align-middle btn btn-primary btn-sm" asp-controller="TodoItems" asp-action="SetTodoItemCompleted" asp-route-id=@todoItem.Id>Complete</a>
+                <a class="align-middle btn btn-danger btn-sm" asp-controller="TodoItems" asp-action="DeleteTodoItem" asp-route-id=@todoItem.Id>Delete</a>
+            </div>
+            <div class="w-100"></div>
+            <div class="col align-text-bottom">
+                <h5 class="@todoItemExpiredDate">Due Date: @todoItem.DueDate.ToString("MM/dd/yyyy h:mm tt")</h5>
+            </div>
+            <div class="w-100"></div>
+            <div class="col align-text-bottom">
+                <h5><tt>@todoItem!.Category!.Name</tt></h5>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

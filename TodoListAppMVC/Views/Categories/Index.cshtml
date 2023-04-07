@@ -1,0 +1,35 @@
+@model TodoListAppMVC.Models.CategoryCreationViewModel;
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<form method="post" class="mb-4" asp-controller="Categories" asp-action="CreateCategory">
+    <div class="mb-3 row">
+        <div class="col-11">
+            <input type="text" asp-for="NewCategory.Name" placeholder="Category name..." class="form-control">
+            <span asp-validation-for="NewCategory.Name"></span>
+        </div>
+        <div class="col-1">
+            <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+    </div>
+</form>
+
+
+
+@foreach (var category in Model.Categories)
+{
+
+    <div class="row mb-3 justify-content-center">
+        <div class="col-5">
+            <h2>@category.Name</h2>
+        </div>
+        <div class="col-2 my-auto">
+            <a class="align-middle btn btn-danger" asp-controller="Categories" asp-action="DeleteCategory" asp-route-id=@category.Id>Delete</a>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,40 @@
+@model TodoListAppMVC.Models.TodoItemUpdateViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1 class="mb-4">Update task</h1>
+
+<form method="post" class="mb-5" asp-controller="TodoItems" asp-action="UpdateTodoItemPost">
+    <div class="mb-3 row">
+        <div class="col-12">
+            <input type="hidden" asp-for="TodoItemToUpdate.Id">
+            <input type="text" asp-for="TodoItemToUpdate.Name" placeholder="Task..." class="form-control">
+            <span asp-validation-for="TodoItemToUpdate.Name"></span>
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <div class="col-4">
+            <select class="form-select" asp-for="TodoItemToUpdate.CategoryId" asp-items="@Model.Categories">
+                <option value="" disabled selected>Select category</option>
+            </select>
+            <span asp-validation-for="TodoItemToUpdate.CategoryId"></span>
+        </div>
+        <div class="col-4">
+            <input type="datetime-local" asp-for="TodoItemToUpdate.DueDate" class="form-control">
+            <span asp-validation-for="TodoItemToUpdate.DueDate"></span>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-3 form-check my-auto">
+            <input class="form-check-input" asp-for="TodoItemToUpdate.Completed" type="checkbox" value="true">
+            <label class="form-check-label" asp-for="TodoItemToUpdate.Completed">
+                Completed
+            </label>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
