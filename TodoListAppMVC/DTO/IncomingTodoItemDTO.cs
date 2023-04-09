@@ -4,12 +4,12 @@ namespace TodoListAppMVC.DTO;
 
 public class IncomingTodoItemDTO
 {
-    [Required]
-    [StringLength(50)]
+    [Required(ErrorMessage = "Todo item name is required field")]
+    [StringLength(100, ErrorMessage = "Todo item name cannot be longest than 50 characters")]
     public string? Name { get; set; }
-    [Required]
+    [Required(ErrorMessage = "Due date is required field")]
     public DateTime DueDate { get; set; }
     public bool Completed { get; set; }
-    [Required]
+    [Required(ErrorMessage = "Todo item's category is required field")]
     public int CategoryId { get; set; }
 }
