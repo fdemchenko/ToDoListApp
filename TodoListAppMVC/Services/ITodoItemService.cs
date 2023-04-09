@@ -5,10 +5,10 @@ namespace TodoListAppMVC.Services;
 
 public interface ITodoItemService
 {
-    Task<IEnumerable<TodoItem>> GetAllSorted();
-    Task Add(IncomingTodoItemDTO newTodoItem);
-    Task Delete(int id);
-    Task SetCompleted(int id);
-    Task<TodoItem?> GetById(int id);
-    Task Update(UpdateTodoItemDTO updatedTodoItem);
+    Task<IEnumerable<TodoItem>> GetAllSortedAsync();
+    Task AddAsync(IncomingTodoItemDTO newTodoItem);
+    Task DeleteAsync(int id);
+    Task SetCompletedAsync(int id);
+    Task<TodoItem?> GetByIdAsync(int id);
+    Task UpdateAsync(UpdateTodoItemDTO updatedTodoItem);
 }

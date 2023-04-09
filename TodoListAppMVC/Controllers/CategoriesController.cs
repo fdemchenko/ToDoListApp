@@ -16,25 +16,25 @@ public class CategoriesController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> IndexAsync()
     {
-        IEnumerable<Category> categories = await _categoryService.GetAll();
+        IEnumerable<Category> categories = await _categoryService.GetAllAsync();
         
         return View(new CategoryCreationViewModel { Categories = categories });
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateCategory(IncomingCategoryDTO NewCategory)
+    public async Task<IActionResult> CreateCategoryAsync(IncomingCategoryDTO NewCategory)
     {
         if (ModelState.IsValid)
-            await _categoryService.Add(NewCategory);
+            await _categoryService.AddAsync(NewCategory);
         return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
-    public async Task<IActionResult> DeleteCategory(int id)
+    public async Task<IActionResult> DeleteCategoryAsync(int id)
     {
-        await _categoryService.DeleteById(id);
+        await _categoryService.DeleteByIdAsync(id);
         return RedirectToAction(nameof(Index));
     }
 }

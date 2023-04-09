@@ -20,46 +20,46 @@ public class TodoItemsController : Controller
         _mapper = mapper;
     }
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> IndexAsync()
     {
-        IEnumerable<Category> categories = await _categoryService.GetAll();
+        IEnumerable<Category> categories = await _categoryService.GetAllAsync();
         TodoItemCreationViewModel viewModel = new TodoItemCreationViewModel();
-        viewModel.TodoItems = await _todoItemService.GetAllSorted();
+        viewModel.TodoItems = await _todoItemService.GetAllSortedAsync();
         viewModel.Categories = categories.Select(category => new SelectListItem { Value = category.Id.ToString(), Text = category.Name } );
 
         return View(viewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateTodoItem(IncomingTodoItemDTO NewTodoItem)
+    public async Task<IActionResult> CreateTodoItemAsync(IncomingTodoItemDTO NewTodoItem)
     {
         if (ModelState.IsValid)
-            await _todoItemService.Add(NewTodoItem);
+            await _todoItemService.AddAsync(NewTodoItem);
         return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
-    public async Task<IActionResult> DeleteTodoItem(int id)
+    public async Task<IActionResult> DeleteTodoItemAsync(int id)
     {
-        await _todoItemService.Delete(id);
+        await _todoItemService.DeleteAsync(id);
         return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
-    public async Task<IActionResult> SetTodoItemCompleted(int id)
+    public async Task<IActionResult> SetTodoItemCompletedAsync(int id)
     {
-        await _todoItemService.SetCompleted(id);
+        await _todoItemService.SetCompletedAsync(id);
         return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
-    public async Task<IActionResult> UpdateTodoItem(int id)
+    public async Task<IActionResult> UpdateTodoItemAsync(int id)
     {
-        TodoItem? todoItem = await _todoItemService.GetById(id);
+        TodoItem? todoItem = await _todoItemService.GetByIdAsync(id);
         if (todoItem is null)
             return RedirectToAction(nameof(Index));
         
-        IEnumerable<Category> categories = await _categoryService.GetAll();
+        IEnumerable<Category> categories = await _categoryService.GetAllAsync();
 
         TodoItemUpdateViewModel viewModel = new TodoItemUpdateViewModel();
         viewModel.TodoItemToUpdate = _mapper.Map<UpdateTodoItemDTO>(todoItem);
@@ -69,10 +69,10 @@ public class TodoItemsController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateTodoItemPost(UpdateTodoItemDTO TodoItemToUpdate)
+    public async Task<IActionResult> UpdateTodoItemPostAsync(UpdateTodoItemDTO TodoItemToUpdate)
     {
         if (ModelState.IsValid)
-            await _todoItemService.Update(TodoItemToUpdate);
+            await _todoItemService.UpdateAsync(TodoItemToUpdate);
 
         return RedirectToAction(nameof(Index));
     }

@@ -4,9 +4,9 @@ namespace TodoListAppMVC.DAL.Repositories;
 
 public interface ITodoItemRepository
 {
-    Task<IEnumerable<TodoItem>> GetAll();
-    Task<TodoItem?> GetById(int id);
-    Task DeleteById(int id);
-    Task Update(TodoItem todoItem);
-    Task Add(TodoItem todoItem);
+    Task<IEnumerable<TodoItem>> GetAllAsync();
+    Task<TodoItem?> GetByIdAsync(int id);
+    Task DeleteByIdAsync(int id);
+    Task UpdateAsync(TodoItem todoItem);
+    Task AddAsync(TodoItem todoItem);
 }

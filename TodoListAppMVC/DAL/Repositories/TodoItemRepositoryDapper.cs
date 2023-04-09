@@ -12,20 +12,20 @@ public class TodoItemRepositoryDapper : ITodoItemRepository
         _connectionString = config.GetConnectionString("Default");
     }
 
-    public async Task Add(TodoItem todoItem)
+    public async Task AddAsync(TodoItem todoItem)
     {
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
         await connection.ExecuteAsync(@"INSERT INTO TodoItems (Name, DueDate, Completed, CategoryId) VALUES
                                     (@Name, @DueDate, @Completed, @CategoryId)", todoItem);
     }
 
-    public async Task DeleteById(int id)
+    public async Task DeleteByIdAsync(int id)
     { 
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
         await connection.ExecuteAsync("DELETE FROM TodoItems WHERE Id = @Id", new { Id = id });
     }
 
-    public async Task<IEnumerable<TodoItem>> GetAll()
+    public async Task<IEnumerable<TodoItem>> GetAllAsync()
     {
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
         return await connection.QueryAsync<TodoItem, Category, TodoItem>(
@@ -38,7 +38,7 @@ public class TodoItemRepositoryDapper : ITodoItemRepository
             }); 
     }
 
-    public async Task<TodoItem?> GetById(int id)
+    public async Task<TodoItem?> GetByIdAsync(int id)
     {
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
         IEnumerable<TodoItem> todoItems =  await connection.QueryAsync<TodoItem, Category, TodoItem>(
@@ -52,7 +52,7 @@ public class TodoItemRepositoryDapper : ITodoItemRepository
         return todoItems.FirstOrDefault();
     }
 
-    public async Task Update(TodoItem todoItem)
+    public async Task UpdateAsync(TodoItem todoItem)
     {
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
         await connection.ExecuteAsync(@"UPDATE TodoItems SET Name = @Name, DueDate = @DueDate, Completed = @Completed, CategoryId = @CategoryId WHERE Id = @Id", todoItem);

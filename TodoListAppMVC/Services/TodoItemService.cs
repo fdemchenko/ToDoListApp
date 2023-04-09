@@ -14,42 +14,42 @@ public class TodoItemService : ITodoItemService
         _repository = repository;
         _mapper = mapper;
     }
-    public async Task Add(IncomingTodoItemDTO newTodoItemDTO)
+    public async Task AddAsync(IncomingTodoItemDTO newTodoItemDTO)
     {
         TodoItem newItem = _mapper.Map<TodoItem>(newTodoItemDTO);
-        await _repository.Add(newItem);
+        await _repository.AddAsync(newItem);
     }
 
-    public async Task Delete(int id)
+    public async Task DeleteAsync(int id)
     {
-        await _repository.DeleteById(id);
+        await _repository.DeleteByIdAsync(id);
     }
 
-    public async Task<IEnumerable<TodoItem>> GetAllSorted()
+    public async Task<IEnumerable<TodoItem>> GetAllSortedAsync()
     {
-        IEnumerable<TodoItem> items = await _repository.GetAll();
+        IEnumerable<TodoItem> items = await _repository.GetAllAsync();
         return items.OrderBy(item => item, new TodoItemComparer());
     }
 
-    public Task<TodoItem?> GetById(int id)
+    public Task<TodoItem?> GetByIdAsync(int id)
     {
-        return _repository.GetById(id);
+        return _repository.GetByIdAsync(id);
     }
 
-    public async Task SetCompleted(int id)
+    public async Task SetCompletedAsync(int id)
     {
-        TodoItem? todoItem = await _repository.GetById(id);
+        TodoItem? todoItem = await _repository.GetByIdAsync(id);
         if (todoItem is not null) 
         {
             todoItem.Completed = true;
-            await _repository.Update(todoItem);
+            await _repository.UpdateAsync(todoItem);
         }
     }
 
-    public async Task Update(UpdateTodoItemDTO updatedTodoItemDTO)
+    public async Task UpdateAsync(UpdateTodoItemDTO updatedTodoItemDTO)
     {
         TodoItem todoItemUpdated = _mapper.Map<TodoItem>(updatedTodoItemDTO);
-        await _repository.Update(todoItemUpdated);
+        await _repository.UpdateAsync(todoItemUpdated);
     }
 
     public class TodoItemComparer : IComparer<TodoItem>

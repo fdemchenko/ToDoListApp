@@ -4,7 +4,7 @@ using TodoListAppMVC.DTO;
 namespace TodoListAppMVC.Services;
 public interface ICategoryService
 {
-    Task<IEnumerable<Category>> GetAll();
-    Task Add(IncomingCategoryDTO newCategoryDTO);
-    Task DeleteById(int id);
+    Task<IEnumerable<Category>> GetAllAsync();
+    Task AddAsync(IncomingCategoryDTO newCategoryDTO);
+    Task DeleteByIdAsync(int id);
 }

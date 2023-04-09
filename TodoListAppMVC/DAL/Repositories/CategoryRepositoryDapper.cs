@@ -12,25 +12,25 @@ public class CategoryRepositoryDapper : ICategoryRepository
         _connectionString = config.GetConnectionString("Default");
     }
 
-    public async Task Add(Category category)
+    public async Task AddAsync(Category category)
     {
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
         await connection.ExecuteAsync("INSERT INTO Categories (Name) VALUES (@Name)", category);
     }
 
-    public async Task DeleteById(int id)
+    public async Task DeleteByIdAsync(int id)
     {
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
         await connection.ExecuteAsync("DELETE FROM Categories WHERE Id = @Id", new { Id = id });
     }
 
-    public async Task<IEnumerable<Category>> GetAll()
+    public async Task<IEnumerable<Category>> GetAllAsync()
     {
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
         return await connection.QueryAsync<Category>("SELECT * FROM Categories"); 
     }
 
-    public async Task<Category?> GetByName(string name)
+    public async Task<Category?> GetByNameAsync(string name)
     {
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
         return await connection.QueryFirstOrDefaultAsync<Category>(
