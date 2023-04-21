@@ -14,22 +14,22 @@ public class CategoryService : ICategoryService
         _mapper = mapper;
     }
 
-    public async Task AddAsync(IncomingCategoryDTO newCategoryDTO)
+    public void Add(IncomingCategoryDTO newCategoryDTO)
     {
-        Category? existingCategory = await _repository.GetByNameAsync(newCategoryDTO.Name!);
+        Category? existingCategory = _repository.GetByName(newCategoryDTO.Name!);
         if (existingCategory is not null)
             return;
         
-        await _repository.AddAsync(_mapper.Map<Category>(newCategoryDTO));
+        _repository.Add(_mapper.Map<Category>(newCategoryDTO));
     }
 
-    public async Task DeleteByIdAsync(int id)
+    public void DeleteById(int id)
     {
-        await _repository.DeleteByIdAsync(id);
+        _repository.DeleteById(id);
     }
 
-    public async Task<IEnumerable<Category>> GetAllAsync()
+    public IEnumerable<Category> GetAll()
     {
-        return await _repository.GetAllAsync();
+        return _repository.GetAll();
     }
 }

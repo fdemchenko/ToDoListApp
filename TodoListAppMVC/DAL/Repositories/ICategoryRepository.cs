@@ -4,8 +4,9 @@ namespace TodoListAppMVC.DAL.Repositories;
 
 public interface ICategoryRepository
 {
-    Task<IEnumerable<Category>> GetAllAsync();
-    Task<Category?> GetByNameAsync(string name);
-    Task DeleteByIdAsync(int id);
-    Task AddAsync(Category todoItem);
+    IEnumerable<Category> GetAll();
+    Category? GetByName(string name);
+    Category? GetById(int id);
+    void DeleteById(int id);
+    void Add(Category todoItem);
 }

@@ -12,23 +12,23 @@ public class TodoItemRepositoryDapper : ITodoItemRepository
         _connectionString = config.GetConnectionString("Default");
     }
 
-    public async Task AddAsync(TodoItem todoItem)
+    public void Add(TodoItem todoItem)
     {
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-        await connection.ExecuteAsync(@"INSERT INTO TodoItems (Name, DueDate, Completed, CategoryId) VALUES
+        connection.Execute(@"INSERT INTO TodoItems (Name, DueDate, Completed, CategoryId) VALUES
                                     (@Name, @DueDate, @Completed, @CategoryId)", todoItem);
     }
 
-    public async Task DeleteByIdAsync(int id)
+    public void DeleteById(int id)
     { 
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-        await connection.ExecuteAsync("DELETE FROM TodoItems WHERE Id = @Id", new { Id = id });
+        connection.Execute("DELETE FROM TodoItems WHERE Id = @Id", new { Id = id });
     }
 
-    public async Task<IEnumerable<TodoItem>> GetAllAsync()
+    public IEnumerable<TodoItem> GetAll()
     {
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-        return await connection.QueryAsync<TodoItem, Category, TodoItem>(
+        return connection.Query<TodoItem, Category, TodoItem>(
             @"SELECT tdi.Id, tdi.Name, tdi.DueDate, tdi.Completed, ctg.Id, ctg.Name
             FROM TodoItems tdi JOIN Categories ctg ON ctg.Id = tdi.CategoryId",
             (todoItem, category) => {
@@ -38,10 +38,10 @@ public class TodoItemRepositoryDapper : ITodoItemRepository
             }); 
     }
 
-    public async Task<TodoItem?> GetByIdAsync(int id)
+    public TodoItem? GetById(int id)
     {
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-        IEnumerable<TodoItem> todoItems =  await connection.QueryAsync<TodoItem, Category, TodoItem>(
+        IEnumerable<TodoItem> todoItems =  connection.Query<TodoItem, Category, TodoItem>(
             @"SELECT tdi.Id, tdi.Name, tdi.DueDate, tdi.Completed, ctg.Id, ctg.Name 
             FROM TodoItems tdi JOIN Categories ctg ON ctg.Id = tdi.CategoryId WHERE tdi.Id = @Id",
             (todoItem, category) => {
@@ -52,9 +52,9 @@ public class TodoItemRepositoryDapper : ITodoItemRepository
         return todoItems.FirstOrDefault();
     }
 
-    public async Task UpdateAsync(TodoItem todoItem)
+    public void Update(TodoItem todoItem)
     {
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
-        await connection.ExecuteAsync(@"UPDATE TodoItems SET Name = @Name, DueDate = @DueDate, Completed = @Completed, CategoryId = @CategoryId WHERE Id = @Id", todoItem);
+        connection.Execute(@"UPDATE TodoItems SET Name = @Name, DueDate = @DueDate, Completed = @Completed, CategoryId = @CategoryId WHERE Id = @Id", todoItem);
     }
 }
