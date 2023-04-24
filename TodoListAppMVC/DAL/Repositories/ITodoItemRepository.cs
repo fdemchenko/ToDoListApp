@@ -9,4 +9,5 @@ public interface ITodoItemRepository
     void DeleteById(int id);
     void Update(TodoItem todoItem);
     void Add(TodoItem todoItem);
+    IEnumerable<TodoItem> GetByCategoryId(int categoryId);
 }

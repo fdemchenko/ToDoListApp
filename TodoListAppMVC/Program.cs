@@ -1,30 +1,59 @@
+
 using TodoListAppMVC.DAL.Repositories;
 using TodoListAppMVC.Services;
 using TodoListAppMVC.DAL.Models;
 using TodoListAppMVC.DTO;
+using TodoListAppMVC.AutoMapperConfig;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
-
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddAutoMapper(config => {
     config.CreateMap<IncomingTodoItemDTO, TodoItem>();
     config.CreateMap<IncomingCategoryDTO, Category>();
     config.CreateMap<UpdateTodoItemDTO, TodoItem>().ReverseMap();
+    config.AddProfile<XMLMappingProfile>();
 });
-builder.Services.AddSingleton<ITodoItemRepository, TodoItemRepositoryDapper>();
-builder.Services.AddSingleton<ICategoryRepository, CategoryRepositoryDapper>();
-builder.Services.AddSingleton<ITodoItemService, TodoItemService>();
-builder.Services.AddSingleton<ICategoryService, CategoryService>();
+
+builder.Services.AddTransient<CategoryRepositoryDapper>();
+builder.Services.AddTransient<CategoryRepositoryXML>();
+builder.Services.AddTransient<TodoItemRepositoryDapper>();
+builder.Services.AddTransient<TodoItemRepositoryXML>();
+
+builder.Services.AddScoped<ICategoryRepository>(provider => {
+    HttpContext httpContext = provider.GetRequiredService<IHttpContextAccessor>().HttpContext!;
+
+    string storageType = string.Empty;
+    httpContext.Request.Cookies.TryGetValue("storage", out storageType!);
+    storageType = storageType ?? "postgresql";
+
+    if (storageType.Equals("xml", StringComparison.OrdinalIgnoreCase))
+        return provider.GetRequiredService<CategoryRepositoryXML>();
+    return provider.GetRequiredService<CategoryRepositoryDapper>();
+});
+builder.Services.AddScoped<ITodoItemRepository>(provider => {
+    HttpContext httpContext = provider.GetRequiredService<IHttpContextAccessor>().HttpContext!;
+
+    string storageType = string.Empty;
+    httpContext.Request.Cookies.TryGetValue("storage", out storageType!);
+    storageType = storageType ?? "postgresql";
+
+    if (storageType.Equals("xml", StringComparison.OrdinalIgnoreCase))
+        return provider.GetRequiredService<TodoItemRepositoryXML>();
+    return provider.GetRequiredService<TodoItemRepositoryDapper>();
+});
+
+builder.Services.AddScoped<ITodoItemService, TodoItemService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
-// Configure the HTTP request pipeline.
+
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

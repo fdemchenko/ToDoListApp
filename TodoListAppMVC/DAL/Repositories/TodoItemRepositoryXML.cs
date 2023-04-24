@@ -1,5 +1,6 @@
 using TodoListAppMVC.DAL.Models;
 using System.Xml.Linq;
+using AutoMapper;
 
 namespace TodoListAppMVC.DAL.Repositories;
 
@@ -7,11 +8,13 @@ public class TodoItemRepositoryXML : ITodoItemRepository
 {
     private readonly string _xmlTodoItemsFileName;
     private readonly ICategoryRepository _categoryRepository;
+    private readonly IMapper _mapper;
 
-    public TodoItemRepositoryXML(IConfiguration config, ICategoryRepository categoryRepository)
+    public TodoItemRepositoryXML(IConfiguration config, ICategoryRepository categoryRepository, IMapper mapper)
     {
         _xmlTodoItemsFileName = config["TodoItemsXMLFilePath"];
         _categoryRepository = categoryRepository;
+        _mapper = mapper;
     }
 
     public void Add(TodoItem todoItem)
@@ -49,15 +52,11 @@ public class TodoItemRepositoryXML : ITodoItemRepository
         if (todoitems is null)
             throw new FormatException("Invalid xml format!");
         return todoitems.Elements("todoitem")
-                .Select(t => new TodoItem 
-                    { 
-                        Id = Convert.ToInt32(t.Attribute("id")?.Value), 
-                        Name = t.Element("name")?.Value,
-                        DueDate = DateTime.Parse(t.Element("dueDate")!.Value),
-                        Category = _categoryRepository.GetById(Convert.ToInt32(t.Attribute("categoryId")!.Value)),
-                        Completed = Convert.ToBoolean(t.Element("completed")!.Value),
-                        CategoryId = Convert.ToInt32(t.Attribute("categotyId")?.Value)
-                    });
+                .Select(todoItemElement => _mapper.Map<TodoItem>(todoItemElement))
+                .Select(todoItem => {
+                    todoItem.Category = _categoryRepository.GetById(todoItem.CategoryId);
+                    return todoItem;
+                });
     }
 
     public TodoItem? GetById(int id)
@@ -66,20 +65,15 @@ public class TodoItemRepositoryXML : ITodoItemRepository
         XElement? todoitems = xdoc.Element("todoitems");
         
         if (todoitems is null)
-            throw new FormatException("Invalid xml format!");
-        
+            throw new FormatException("Invalid xml format!");   
         return todoitems.Elements("todoitem")
-                .Where(t => t.Attribute("id")!.Value == id.ToString())
-                .Select(t => { Console.WriteLine(t); return new TodoItem 
-                    { 
-                        Id = Convert.ToInt32(t.Attribute("id")?.Value), 
-                        Name = t.Element("name")?.Value,
-                        DueDate = DateTime.Parse(t.Element("dueDate")!.Value),
-                        Category = _categoryRepository.GetById(Convert.ToInt32(t.Attribute("categoryId")!.Value)),
-                        Completed = Convert.ToBoolean(t.Element("completed")!.Value),
-                        CategoryId = Convert.ToInt32(t.Attribute("categoryId")!.Value)
-                    };})
-                .FirstOrDefault();    
+                .Where(todoItemElement => todoItemElement.Attribute("id")!.Value == id.ToString())
+                .Select(todoItemElement => _mapper.Map<TodoItem>(todoItemElement))
+                .Select(todoItem => {
+                    todoItem.Category = _categoryRepository.GetById(todoItem.CategoryId);
+                    return todoItem;
+                })
+                .FirstOrDefault();
     }
 
     public void Update(TodoItem todoItem)
@@ -119,16 +113,13 @@ public class TodoItemRepositoryXML : ITodoItemRepository
         
         if (todoitems is null)
             throw new FormatException("Invalid xml format!");
+
         return todoitems.Elements("todoitem")
-            .Where(t => t.Attribute("categoryId")!.Value == categoryId.ToString())
-            .Select(t => new TodoItem 
-                { 
-                    Id = Convert.ToInt32(t.Attribute("id")!.Value), 
-                    Name = t.Element("name")!.Value,
-                    DueDate = DateTime.Parse(t.Element("dueDate")!.Value),
-                    Category = _categoryRepository.GetById(Convert.ToInt32(t.Attribute("categoryId")!.Value)),
-                    Completed = Convert.ToBoolean(t.Element("completed")!.Value),
-                    CategoryId = Convert.ToInt32(t.Attribute("categotyId")!.Value)
+                .Where(todoItemElement => todoItemElement.Attribute("categoryId")!.Value == categoryId.ToString())
+                .Select(todoItemElement => _mapper.Map<TodoItem>(todoItemElement))
+                .Select(todoItem => {
+                    todoItem.Category = _categoryRepository.GetById(todoItem.CategoryId);
+                    return todoItem;
                 });
     }
 }

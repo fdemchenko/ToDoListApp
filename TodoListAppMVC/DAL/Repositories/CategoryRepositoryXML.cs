@@ -1,5 +1,6 @@
 using TodoListAppMVC.DAL.Models;
 using System.Xml.Linq;
+using AutoMapper;
 
 namespace TodoListAppMVC.DAL.Repositories;
 
@@ -7,10 +8,12 @@ public class CategoryRepositoryXML : ICategoryRepository
 {
     private readonly string _xmlCategoriesFileName;
     private readonly string _xmlTodoItemsFileName;
-    public CategoryRepositoryXML(IConfiguration config)
+    private readonly IMapper _mapper;
+    public CategoryRepositoryXML(IConfiguration config, IMapper mapper)
     {
         _xmlCategoriesFileName = config["CategoriesXMLFilePath"];
         _xmlTodoItemsFileName = config["TodoItemsXMLFilePath"];
+        _mapper = mapper;
     }
 
     public void Add(Category category)
@@ -25,26 +28,18 @@ public class CategoryRepositoryXML : ICategoryRepository
 
     public void DeleteById(int id)
     {
-        // var todoItemsToDelete = _todoItemRepository.GetByCategoryId(id);
-        // foreach (var todoItemToDelete in todoItemsToDelete)
-        // {
-        //     _todoItemRepository.DeleteById(todoItemToDelete.Id);
-        //     Console.WriteLine(todoItemToDelete.Id);
-        // }
         XDocument xdoc = XDocument.Load(_xmlTodoItemsFileName);
         var todoItemsToDelete = xdoc.Element("todoitems")?.Elements("todoitem")
             .Where(todoItemElem => todoItemElem.Attribute("categoryId")!.Value == id.ToString());
         if (todoItemsToDelete is not null)
         {
             foreach (var todoItem in todoItemsToDelete)
-            {
                 todoItemsToDelete.Remove();
-            }
         }
         xdoc.Save(_xmlTodoItemsFileName);
 
 
-         xdoc = XDocument.Load(_xmlCategoriesFileName);
+        xdoc = XDocument.Load(_xmlCategoriesFileName);
         XElement? categories = xdoc.Element("categories");
  
         var categoryToDelete = categories?.Elements("category")
@@ -65,28 +60,26 @@ public class CategoryRepositoryXML : ICategoryRepository
         if (categories is null)
             throw new FormatException("Invalid xml format!");
         return categories.Elements("category")
-            .Select(c => new Category 
-                    { 
-                        Id = Convert.ToInt32(c.Attribute("id")!.Value), 
-                        Name = c.Attribute("name")!.Value 
-                    });    
+               .Select(categoryElement => _mapper.Map<Category>(categoryElement));
+        // return categories.Elements("category")
+        //     .Select(c => new Category 
+        //             { 
+        //                 Id = Convert.ToInt32(c.Attribute("id")!.Value), 
+        //                 Name = c.Attribute("name")!.Value 
+        //             });    
     }
 
     public Category? GetByName(string name)
     {
         XDocument xdoc = XDocument.Load(_xmlCategoriesFileName);
         XElement? categories = xdoc.Element("categories");
-        
+
         if (categories is null)
             throw new FormatException("Invalid xml format!");
         return categories.Elements("category")
-            .Where(c => c.Attribute("name")?.Value == name)
-            .Select(c => new Category 
-                    { 
-                        Id = Convert.ToInt32(c.Attribute("id")?.Value), 
-                        Name = c.Attribute("name")?.Value 
-                    })
-            .FirstOrDefault();    
+            .Where(categoryElement => categoryElement.Attribute("name")?.Value == name)
+            .Select(categoryElement => _mapper.Map<Category>(categoryElement))
+            .FirstOrDefault();
     }
 
     public Category? GetById(int id)
@@ -97,12 +90,8 @@ public class CategoryRepositoryXML : ICategoryRepository
         if (categories is null)
             throw new FormatException("Invalid xml format!");
         return categories.Elements("category")
-            .Where(c => c.Attribute("id")?.Value == id.ToString())
-            .Select(c => new Category 
-                    { 
-                        Id = Convert.ToInt32(c.Attribute("id")!.Value), 
-                        Name = c.Attribute("name")!.Value 
-                    })
+            .Where(categoryElement => categoryElement.Attribute("id")?.Value == id.ToString())
+            .Select(categoryElement => _mapper.Map<Category>(categoryElement))
             .FirstOrDefault();    
     }
 

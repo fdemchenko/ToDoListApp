@@ -52,6 +52,20 @@ public class TodoItemRepositoryDapper : ITodoItemRepository
         return todoItems.FirstOrDefault();
     }
 
+    public IEnumerable<TodoItem> GetByCategoryId(int categoryId)
+    {
+        using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+        IEnumerable<TodoItem> todoItems =  connection.Query<TodoItem, Category, TodoItem>(
+            @"SELECT tdi.Id, tdi.Name, tdi.DueDate, tdi.Completed, ctg.Id, ctg.Name 
+            FROM TodoItems tdi JOIN Categories ctg ON ctg.Id = tdi.CategoryId WHERE tdi.CategoryId = @CategoryId",
+            (todoItem, category) => {
+                todoItem.CategoryId = category.Id;
+                todoItem.Category = category;
+                return todoItem;
+            }, new { CategoryId = categoryId }); 
+        return todoItems;
+    }
+
     public void Update(TodoItem todoItem)
     {
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
