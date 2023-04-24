@@ -52,8 +52,8 @@ public class TodoItemRepositoryXML : ITodoItemRepository
         if (todoitems is null)
             throw new FormatException("Invalid xml format!");
         return todoitems.Elements("todoitem")
-                .Select(todoItemElement => _mapper.Map<TodoItem>(todoItemElement))
-                .Select(todoItem => {
+                .Select(todoItemElement => {
+                    TodoItem todoItem = _mapper.Map<TodoItem>(todoItemElement);
                     todoItem.Category = _categoryRepository.GetById(todoItem.CategoryId);
                     return todoItem;
                 });
@@ -68,8 +68,8 @@ public class TodoItemRepositoryXML : ITodoItemRepository
             throw new FormatException("Invalid xml format!");   
         return todoitems.Elements("todoitem")
                 .Where(todoItemElement => todoItemElement.Attribute("id")!.Value == id.ToString())
-                .Select(todoItemElement => _mapper.Map<TodoItem>(todoItemElement))
-                .Select(todoItem => {
+                .Select(todoItemElement => {
+                    TodoItem todoItem = _mapper.Map<TodoItem>(todoItemElement);
                     todoItem.Category = _categoryRepository.GetById(todoItem.CategoryId);
                     return todoItem;
                 })
@@ -116,8 +116,8 @@ public class TodoItemRepositoryXML : ITodoItemRepository
 
         return todoitems.Elements("todoitem")
                 .Where(todoItemElement => todoItemElement.Attribute("categoryId")!.Value == categoryId.ToString())
-                .Select(todoItemElement => _mapper.Map<TodoItem>(todoItemElement))
-                .Select(todoItem => {
+                .Select(todoItemElement => {
+                    TodoItem todoItem = _mapper.Map<TodoItem>(todoItemElement);
                     todoItem.Category = _categoryRepository.GetById(todoItem.CategoryId);
                     return todoItem;
                 });
