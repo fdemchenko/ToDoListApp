@@ -7,49 +7,53 @@ namespace TodoListAppMVC.Services;
 
 public class TodoItemService : ITodoItemService
 {
-    private readonly ITodoItemRepository _repository;
+    private readonly ITodoItemRepository _todoItemRepository;
+    private readonly ICategoryRepository _categoryRepository;
     private readonly IMapper _mapper;
-    public TodoItemService(ITodoItemRepository repository, IMapper mapper)
+    public TodoItemService(ITodoItemRepository todoItemRepository, 
+        IMapper mapper, ICategoryRepository categoryRepository)
     {
-        _repository = repository;
+        _todoItemRepository = todoItemRepository;
+        _categoryRepository = categoryRepository;
         _mapper = mapper;
     }
     public void Add(IncomingTodoItemDTO newTodoItemDTO)
     {
         TodoItem newItem = _mapper.Map<TodoItem>(newTodoItemDTO);
-        _repository.Add(newItem);
+        if (_categoryRepository.GetById(newTodoItemDTO.CategoryId) is not null)
+            _todoItemRepository.Add(newItem);
     }
 
     public void Delete(int id)
     {
-        _repository.DeleteById(id);
+        _todoItemRepository.DeleteById(id);
     }
 
     public IEnumerable<TodoItem> GetAllSorted()
     {
-        IEnumerable<TodoItem> items = _repository.GetAll();
+        IEnumerable<TodoItem> items = _todoItemRepository.GetAll();
         return items.OrderBy(item => item, new TodoItemComparer());
     }
 
     public TodoItem? GetById(int id)
     {
-        return _repository.GetById(id);
+        return _todoItemRepository.GetById(id);
     }
 
     public void SetCompleted(int id)
     {
-        TodoItem? todoItem = _repository.GetById(id);
+        TodoItem? todoItem = _todoItemRepository.GetById(id);
         if (todoItem is not null) 
         {
             todoItem.Completed = true;
-            _repository.Update(todoItem);
+            _todoItemRepository.Update(todoItem);
         }
     }
 
     public void Update(UpdateTodoItemDTO updatedTodoItemDTO)
     {
         TodoItem todoItemUpdated = _mapper.Map<TodoItem>(updatedTodoItemDTO);
-        _repository.Update(todoItemUpdated);
+        _todoItemRepository.Update(todoItemUpdated);
     }
 
     public class TodoItemComparer : IComparer<TodoItem>

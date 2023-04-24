@@ -27,6 +27,17 @@
                         </li>
                     </ul>
                 </div>
+                <form asp-controller="StorageType" asp-action="ChangeStorageType" class="row">
+                    <div class="col-auto">
+                        <select class="form-select" name="storage" id="storageSelect">
+                            <option value="xml">XML Storage</option>
+                            <option value="postgresql">PostgreSQL</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary col-auto form-submit">Change</button>
+                    </div>
+                </form>
             </div>
         </nav>
     </header>
@@ -35,6 +46,21 @@
             @RenderBody()
         </main>
     </div>
+    <script>
+        function getCookie(name) {
+            const matches = document.cookie.match(new RegExp(
+                "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+            ));
+            return matches ? decodeURIComponent(matches[1]) : undefined;
+        }
+
+        const storage = getCookie("storage");
+        const selectElement = document.getElementById("storageSelect");
+        if (storage?.toLowerCase() === 'xml')
+            selectElement.value = 'xml';
+        else
+            selectElement.value = 'postgresql'; 
+    </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
