@@ -1,9 +1,12 @@
 
-using TodoListAppMVC.DAL.Repositories;
+// using TodoListAppMVC.DAL.Repositories;
 using TodoListAppMVC.Services;
-using TodoListAppMVC.DAL.Models;
+// using TodoListAppMVC.DAL.Models;
 using TodoListAppMVC.DTO;
-using TodoListAppMVC.AutoMapperConfig;
+using TodoListDAL.AutoMapperConfig;
+using TodoListDAL.Models;
+using TodoListDAL.Repositories;
+// using TodoListAppMVC.AutoMapperConfig;
 
 var builder = WebApplication.CreateBuilder(args);
 

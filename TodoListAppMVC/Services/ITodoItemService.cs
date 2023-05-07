@@ -1,4 +1,4 @@
-using TodoListAppMVC.DAL.Models;
+using TodoListDAL.Models;
 using TodoListAppMVC.DTO;
 
 namespace TodoListAppMVC.Services;

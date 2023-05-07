@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<todoitems>
-  <nextId>28</nextId>
-  <todoitem id="27" categoryId="30">
-    <name>Xml task 1</name>
-    <dueDate>2023-04-24T10:59:00</dueDate>
-    <completed>False</completed>
-  </todoitem>
-</todoitems>

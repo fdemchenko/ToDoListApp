@@ -1,7 +1,7 @@
 using TodoListAppMVC.DTO;
-using TodoListAppMVC.DAL.Models;
+using TodoListDAL.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc;
+
 
 namespace TodoListAppMVC.Models;
 

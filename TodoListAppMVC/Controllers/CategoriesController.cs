@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using TodoListAppMVC.Models;
 using TodoListAppMVC.Services;
-using TodoListAppMVC.DAL.Models;
+// using TodoListAppMVC.DAL.Models;
+using TodoListDAL.Models;
 using TodoListAppMVC.DTO;
 
 namespace TodoListAppMVC.Controllers;

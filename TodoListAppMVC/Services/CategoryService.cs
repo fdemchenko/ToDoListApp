@@ -1,5 +1,5 @@
-using TodoListAppMVC.DAL.Models;
-using TodoListAppMVC.DAL.Repositories;
+using TodoListDAL.Repositories;
+using TodoListDAL.Models;
 using TodoListAppMVC.DTO;
 using AutoMapper;
 

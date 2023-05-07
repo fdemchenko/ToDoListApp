@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TodoListAppMVC.Models;
 using TodoListAppMVC.Services;
-using TodoListAppMVC.DAL.Models;
+// using TodoListAppMVC.DAL.Models;
+using TodoListDAL.Models;
 using TodoListAppMVC.DTO;
 using AutoMapper;
 

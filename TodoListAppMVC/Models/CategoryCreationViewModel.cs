@@ -1,5 +1,5 @@
 using TodoListAppMVC.DTO;
-using TodoListAppMVC.DAL.Models;
+using TodoListDAL.Models;
 
 namespace TodoListAppMVC.Models;
 

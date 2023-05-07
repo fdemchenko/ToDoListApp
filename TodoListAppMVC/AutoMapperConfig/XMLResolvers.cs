@@ -1,6 +1,6 @@
 using AutoMapper;
 using System.Xml.Linq;
-using TodoListAppMVC.DAL.Models;
+using TodoListDAL.Models;
 
 namespace TodoListAppMVC.AutoMapperConfig
 {
